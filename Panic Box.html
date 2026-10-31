@@ -1,0 +1,826 @@
+ <!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Dodge Game</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background-color: #0d0d0d;
+      margin: 0;
+      height: 100dvh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Press Start 2P', cursive;
+    }
+
+    .game-wrapper {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 30px;
+      align-items: center;
+      width: 100%;
+      height: 100dvh;
+      padding: 0;
+      box-sizing: border-box;
+      position: relative;
+    }
+
+    .center-panel {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding-top: 30px;
+      width: 100%;
+      position: relative;
+    }
+
+    canvas {
+      background-color: #4fc3f7;
+      border: 3px solid white;
+      width: 186px;
+      height: 290px;
+    }
+
+    .bawah-panel {
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      gap: 20px;
+      width: 100%;
+      padding: 0 20px 25px 20px;
+      box-sizing: border-box;
+    }
+
+    .kontrol-panel, .aksi-panel {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .tombol {
+      display: grid;
+      grid-template-columns: repeat(3, 60px);
+      grid-template-rows: repeat(3, 60px);
+      gap: 6px;
+    }
+
+    .tombol button {
+      background-color: white;
+      color: #0d0d0d;
+      border-radius: 8px;
+      border: none;
+      font-size: 20px;
+      font-weight: bold;
+      box-shadow: 0 4px #aaa;
+    }
+
+    .aksi-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr 1fr;
+      gap: 8px;
+      background-color: #2a2a3e;
+      padding: 12px;
+      border-radius: 16px;
+    }
+
+    .aksi-container button {
+      background-color: #2b2b2b;
+      border: 2px solid #d9c9b8;
+      color: white;
+      font-size: 18px;
+      box-shadow: 0 4px #111;
+      padding: 10px;
+      border-radius: 10px;
+    }
+    #buka-toko {
+      display: none;
+}
+    button {
+      user-select: none;
+      -webkit-touch-callout:none;
+      touch-action: manipulation;
+      cursor: pointer;
+    }
+    button:active {
+      transform: translateY(4px);
+      box-shadow: none;
+    }
+
+    #atas { grid-column: 2; grid-row: 1; }
+    #kiri { grid-column: 1; grid-row: 2; }
+    #kanan { grid-column: 3; grid-row: 2; }
+    #bawah { grid-column: 2; grid-row: 3; }
+
+    #menu-pause {
+      display: none;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #2a2a3e;
+      padding: 30px 40px;
+      border-radius: 16px;
+      border: 2px solid white;
+      z-index: 999;
+      text-align: center;
+      box-shadow: 0 0 20px rgba(0,0,0,0.8);
+    }
+
+    #menu-pause p {
+      color: white;
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+    #menu-setting {
+      display: none;
+      position: absolute;
+      top: 50%;
+      left:50%;
+      transform: translate(-50%,-50%);
+      background:#2a2a3e;
+      padding:30px;
+      border-radius: 16px;
+      border: 2px solid white;
+      z-index: 999;
+      text-align:center;
+      max-width: 200px;
+    }
+    #menu-setting p{ color:white; font-size:16px; margin:10px 0 6px; font-family: arial;
+    }
+    #menu-setting-adventure {
+      display:none;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #2a2a3e;
+      padding: 30px;
+      border-radius: 16px;
+      border: 2px solid white;
+      z-index: 999;
+      text-align:center;
+      max-width: 200px;
+    }
+    #menu-toko {
+      display:none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80%;
+      max-width:220px;
+      max-height: 80vh;
+      overflow-y: auto;
+      flex-direction:column;
+      justify-content: center;
+      align-items: center;
+      background: #2a2a3e;
+      padding: 20px;
+      border-radius:16px;
+      border:2px solid gold;
+      z-index:999;
+      text-align:center;
+      color:white;
+    }
+    #menu-toko p{
+     font-size:13px;
+     margin:6px 0;
+    }
+    .item-skin {
+      display:flex;
+      justify-content:space-between;
+      align-items: center;
+      background: #1a1a2e;
+      padding: 8px;
+      border-radius:8px;
+      margin:6px 0;
+      font-size: 10px;
+    }
+    .item-skin button{
+      font-family: 'Press start 2P', cursive;
+      font-size:8px;
+      padding:6px 8px;
+      border:none;
+      border-radius:6px;
+      background:white;
+      color: #2a2a3e;
+    }
+    
+    #menu-setting-adventure p{
+      color: white;
+      font-size:16px;
+      margin:10px 0 6px;
+      font-family:arial;
+    }
+    #menu-mode {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #0d0d0d;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      gap: 16px;
+    }
+    #menu-mode .judul-mode {
+      color: #4fc3f7;
+      font-size: 18px;
+      margin-bottom: 20px;
+      text-shadow: 0 0 10px #4fc3f7, 0 0 20px #4fc3f7;
+    }
+    #menu-mode button {
+      width: 220px;
+      padding: 16px;
+      font-family: 'Press Start 2P', cursive;
+      font-size: 11px;
+      border: none;
+      border-radius: 10px;
+      box-shadow: 0 4px 0 rgba(0,0,0,0.4);
+    }
+    #menu-mode button:active {
+      transform: translateY(4px);
+      box-shadow: none;
+    }
+    .btn-klasik {
+      background: #4fc3f7;
+      color: #0d0d0d;
+    }
+    .btn-adventure {
+      background: #eb5e34;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div id="menu-toko">
+    <p>🛒TOKO SKIN</p>
+    <p id="koin-toko">koin:0</p>
+    <div id="daftar-skin"></div>
+    <button id="tutup-toko">Tutup</button>
+  </div>
+  
+  <div class="game-wrapper">
+    <div id="menu-mode">
+      <p class="judul-mode">🕹️ PILIH MODE</p>
+      <button id="pilih-klasik" class="btn-klasik">⚡ KLASIK</button>
+      <button id="pilih-adventure" class="btn-adventure">🗺️ ADVENTURE</button>
+    </div>
+    <div class="center-panel">
+      <canvas id="game" width="220" height="350"></canvas>
+      <div id="menu-pause">
+        <p>PAUSED</p>
+        <button id="lanjut-pause" style="background: white; color: #2a2a3e; border: none; border-radius: 6px; padding: 10px 20px; font-family: 'Press Start 2P', cursive; font-size: 14px;">LANJUT</button>
+      </div>
+      <div id="menu-setting">
+        <p>PENGATURAN</p>
+        <p class="label-setting">Kecepatan</p>
+        <button class="btn-speed" data-speed="4">mudah</button>
+        <button class="btn-speed" data-speed="8">Normal</button>
+        <button class="btn-speed" data-speed="13">Susah</button>
+         -
+        <p class="label-setting">Warna Player</p>
+        <button class="btn-warna" data-warna="brown">coklat</button>
+        <button class="btn-warna" data-warna="#eb5e34">Oren</button>
+        <button class="btn-warna" data-warna="#a134eb">Ungu</button>
+
+        <p class="label-setting">SUARA</p>
+        <button id="toggle-suara">SUARA:ON</button>
+        <button id="tutup-setting">Tutup</button>
+      </div>
+      <div id="menu-setting-adventure">
+        <p>PENGATURAN</p>
+        <p class="label-setting">SUARA</p>
+        <button id="toggle-suara-adv">SUARA:ON</button>
+        <button id="tutup-setting-adv">Tutup</button>
+</div>
+    </div>
+    <div class="bawah-panel">
+      <div class="kontrol-panel">
+        <div class="tombol">
+          <button id="atas">▲</button>
+          <button id="kiri">◀</button>
+          <button id="bawah">▼</button>
+          <button id="kanan">▶</button>
+        </div>
+      </div>
+      <div class="aksi-panel">
+        <div class="aksi-container">
+          <button id="play">▶️</button>
+          <button id="pause">⏸️</button>
+          <button id="setting">⚙️</button>
+          <button id="quit">✕</button>
+           <button id="buka-toko" class="btn-toko">🛒</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let papan = document.getElementById("game");
+    let ctx = papan.getContext("2d");
+    let player = { x: 100, y: 310, lebar: 40, tinggi: 40, kecepatan: 10 };
+    let musuh = [];
+    let partikel = [];
+    let powerUps = [];
+    let koinDiLayar = [];
+    let skor = 0;
+    let highScore = Number(localStorage.getItem("dogdeHighScore")) || 0;
+    let koin = Number(localStorage.getItem("dogdeKoin")) || 0;
+    let skinList = [
+      {id:"biru", nama:"Biru Es", warna:"#4fc3f7", harga:20, dimiliki:false},
+      {id:"ungu", nama:"ungu kegelapan", warna:"#6c2eb5", harga:45, dimiliki:false},
+      {id:"putih", nama:"putih tulang", warna:"#f0f0f0", harga:60, dimiliki:false}
+    ];
+    let skinTersimpan = JSON.parse(localStorage.getItem("dogdeSkinDimiliki")) || [];
+    skinList.forEach(function(skin) {
+      if(skinTersimpan.includes(skin.id)) {
+        skin.dimiliki = true;
+      }
+    });
+    let skinAktif = localStorage.getItem("dodgeSkinAktif") || "default";
+    let koinCounter = 0;
+    let kecepatanMusuh = 3;
+    let warnaPlayer = "yellow";
+    let gameOver = false;
+    let quitGame = false;
+    let gerakKiri = false, gerakKanan = false, gerakAtas = false, gerakBawah = false;
+    let isPaused = false;
+    let spawnCounter = 0;
+    let powerUpCounter = 0;
+    let koinCounterSpawn = 0;
+    const warnaMusuh = ["#51CF66","#FDD835","#FF6B6B","#FF9E64"];
+    let suaraNyala = true;
+    let audioCtx = new AudioContext();
+    let mode = "klasik";
+    let gameStarted = false;
+    let nyawaMax = 3;
+    let nyawa = nyawaMax;
+    let shieldAktif = false;
+    let shieldTimer = 0;
+    let musikInterval = null;
+    let notaMusik = [196, 196, 294, 294, 247, 196, 147, 196];
+    let indexNota = 0;
+    function mainkanMusik() {
+      if (!suaraNyala) return;
+      let osc = audioCtx.createOscillator();
+      let gain = audioCtx.createGain();
+      osc.type = "square";
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.frequency.value = notaMusik[indexNota];
+      gain.gain.value = 0.05;
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.2);
+      indexNota = (indexNota + 1) % notaMusik.length;
+    }
+
+    function mulaiMusik() {
+      if (musikInterval) return;
+      musikInterval = setInterval(mainkanMusik, 180);
+    }
+
+    function stopMusik() {
+      clearInterval(musikInterval);
+      musikInterval = null;
+    }
+
+    function suaraBeep() {
+      if(!suaraNyala) return;
+      let oscillator = audioCtx.createOscillator();
+      oscillator.connect(audioCtx.destination);
+      oscillator.frequency.value = 300;
+      oscillator.start();
+      oscillator.stop(audioCtx.currentTime + 0.1);
+    }
+
+    function spawnMusuh() {
+      let arah = Math.floor(Math.random() * 3);
+      let enemy = { width: 10, height: 10 };
+      if (arah === 0) { enemy.x = Math.random() * (220-10); enemy.y = -14; enemy.directionX = 0; enemy.directionY = kecepatanMusuh; }
+      else if (arah === 1) { enemy.x = -10; enemy.y = Math.random() * (350-10); enemy.directionX = kecepatanMusuh; enemy.directionY = 0; }
+      else if (arah === 2) { enemy.x = 230; enemy.y = Math.random() * (350-10); enemy.directionX = -kecepatanMusuh; enemy.directionY = 0; }
+      else { enemy.x = Math.random() * (220-10); enemy.y = 360; enemy.directionX = 0; enemy.directionY = -kecepatanMusuh; }
+      enemy.color = warnaMusuh[Math.floor(Math.random() * warnaMusuh.length)];
+      musuh.push(enemy);
+    }
+    function simpanSkinDimilik() {
+      let idYangDimiliki = skinList.filter(function(skin) {return skin.dimiliki;}) .map(function(skin) {return skin.id;});
+      localStorage.setItem("dodgeSkinDimiliki", JSON.stringify(idYangDimiliki));
+    }
+    function renderToko() {
+      document.getElementById("koin-toko").innerText = "koin:" + koin;
+      let daftar= document.getElementById("daftar-skin");
+      daftar.innerHTML ="";
+      skinList.forEach(function(skin) {
+        let baris= document.createElement("div");
+        baris.className = "item-skin" ;
+        let tombolHtml ="";
+        if (skin.dimiliki) {
+          tombolHtml = skinAktif === skin.id
+          ? "<button disabled>DIPAKAI</button>"
+          : "<button class='btn-pilih-skin' data-id='" + skin.id + "'>PAKAI</button>";
+        } else {
+           tombolHtml = "<button class='btn-beli-skin' data-id='" + skin.id + "'>" + skin.harga + " 🪙</button>";
+        }
+           baris.innerHTML = "<span>" + skin.nama + "</span>" + tombolHtml;
+           daftar.appendChild(baris);
+      });
+    }
+    function spawnPowerUp() {
+      let p = {
+        x: Math.random() * (220 - 16),
+        y: Math.random() * (350 - 16),
+        ukuran: 16
+      };
+      powerUps.push(p);
+    }
+    function spawnKoin() {
+      let k = {
+        x: Math.random() * (220 - 12),
+        y: Math.random() * (350 - 12),
+        ukuran: 12,
+        umur: 400
+      };
+      koinDiLayar.push(k);
+    }
+    
+    function buatPartikel(x,y) {
+      for (let i = 0; i <15; i++) {
+        partikel.push({
+          x: x,
+          y: y,
+          dx: (Math.random() - 0.5)* 6,
+          dy: (Math.random() - 0.5)* 6,
+          hidup: 30
+        });
+      }
+    }
+
+    function gambarHatiPixel(x, y, hidup) {
+      ctx.fillStyle = hidup ? "#ff4757" : "#333";
+      let pola = [
+        [0,1,1,0,1,1,0],
+        [1,1,1,1,1,1,1],
+        [1,1,1,1,1,1,1],
+        [0,1,1,1,1,1,0],
+        [0,0,1,1,1,0,0],
+        [0,0,0,1,0,0,0]
+      ];
+      for (let row = 0; row < pola.length; row++) {
+        for (let col = 0; col < pola[row].length; col++) {
+          if (pola[row][col] === 1) {
+            ctx.fillRect(x + col * 2, y + row * 2, 2, 2);
+          }
+        }
+      }
+    }
+
+    function checkCollision() {
+      for (let i = 0; i < musuh.length; i++) {
+        let e = musuh[i];
+        if ( player.x < e.x + e.width && player.x + player.lebar > e.x && player.y < e.y + e.height && player.y + player.tinggi > e.y ) {
+          if (mode === "adventure" && shieldAktif) {
+            musuh.splice(i, 1);
+            continue;
+          }
+          suaraBeep();
+          buatPartikel(player.x + player.lebar/2, player.y + player.tinggi/2);
+
+          if (mode === "adventure") {
+            nyawa--;
+            musuh.splice(i, 1);
+            if (nyawa <= 0) {
+              gameOver = true;
+              stopMusik();
+            }
+          } else {
+            gameOver = true;
+            stopMusik();
+          }
+
+          let skorSekarang = Math.floor(skor /10);
+          if (skorSekarang > highScore) {
+            highScore = skorSekarang;
+            localStorage.setItem("dogdeHighScore", highScore);
+          }
+        }
+      }
+    }
+
+    function checkPowerUpCollision() {
+      for (let i = powerUps.length - 1; i >= 0; i--) {
+        let p = powerUps[i];
+        if (player.x < p.x + p.ukuran && player.x + player.lebar > p.x &&
+            player.y < p.y + p.ukuran && player.y + player.tinggi > p.y) {
+          shieldAktif = true;
+          shieldTimer = 300;
+          powerUps.splice(i, 1);
+        }
+      }
+    }
+    function checkKoinCollision() {
+      for (let i = koinDiLayar.length - 1; i >= 0; i--) {
+        let k = koinDiLayar[i];
+        if (player.x < k.x + k   .ukuran && player.x +  player.lebar > k.x && player .y < k.y + k.ukuran && player.y + player.tinggi > k.y) {
+          koin++;
+          localStorage.setItem("dogdeKoin", koin);
+          koinDiLayar.splice(i, 1);
+        }
+        
+      }
+    }
+    
+    document.getElementById("kiri").addEventListener("touchstart", function() { gerakKiri = true; });
+    document.getElementById("kiri").addEventListener("touchend", function() { gerakKiri = false; });
+    document.getElementById("kanan").addEventListener("touchstart", function() { gerakKanan = true; });
+    document.getElementById("kanan").addEventListener("touchend", function() { gerakKanan = false; });
+    document.getElementById("atas").addEventListener("touchstart",function() { gerakAtas = true;});
+    document.getElementById("atas").addEventListener("touchend", function() { gerakAtas = false;});
+    document.getElementById("bawah").addEventListener("touchstart", function() { gerakBawah = true;});
+    document.getElementById("bawah").addEventListener("touchend", function() {gerakBawah = false;});
+
+    document.getElementById("play").addEventListener("click",function() {
+      player.x = 100;
+      player.y = 310;
+      musuh = [];
+      powerUps = [];
+      skor = 0;
+      nyawa = nyawaMax;
+      shieldAktif = false;
+      shieldTimer = 0;
+      gameOver = false;
+      quitGame = false;
+      isPaused = false;
+      mulaiMusik();
+    });
+
+    document.getElementById("setting").addEventListener("click",function() {
+      if(mode === "adventure") {
+      document.getElementById("menu-setting-adventure").style.display= "block";
+      } else {
+        document.getElementById("menu-setting").style.display = "block";
+      }
+      isPaused = true;
+    });
+    document.getElementById("tutup-setting").addEventListener("click",function() {
+      document.getElementById("menu-setting").style.display="none";
+      let menuPause= document.getElementById("menu-pause");
+      if(menuPause.style.display !== "block") {  isPaused= false; }
+    });
+    document.getElementById("tutup-setting-adv").addEventListener("click", function() {
+      document.getElementById("menu-setting-adventure").style.display = "none";
+      isPaused = false;
+    });
+    document.getElementById("buka-toko").addEventListener("click", function() {
+      document.getElementById("menu-setting-adventure").style.display = "none";
+      document.getElementById("menu-toko").style.display = "flex";
+      isPaused = true;
+      renderToko();
+    });
+    document.getElementById("tutup-toko").addEventListener("click", function() {
+      document.getElementById("menu-toko").style.display ="none";
+      isPaused= false;
+    });
+    
+    document.getElementById("toggle-suara-adv").addEventListener("click", function() {
+       suaraNyala = !suaraNyala;
+       if(suaraNyala) {
+         document.getElementById("toggle-suara-adv"). innerText ="SUARA:ON";
+       } else {
+         document.getElementById("toggle-suara-adv").innerText ="SUARA:OF";
+       }
+    });
+
+    document.getElementById("quit").addEventListener("click", function() {
+      quitGame = true;
+      isPaused = false;
+      gerakKiri = false;
+      gerakKanan = false;
+      gerakAtas = false;
+      gerakBawah = false;
+      document.getElementById("menu-pause").style.display = "none";
+      stopMusik();
+    });
+
+    document.getElementById("pause").addEventListener("click", function() {
+      isPaused = !isPaused;
+      if (isPaused) {
+        document.getElementById("pause").innerText = "▶️";
+      } else {
+        document.getElementById("pause").innerText = "⏸️";
+      }
+      let menu = document.getElementById("menu-pause");
+      if (isPaused) {
+        menu.style.display = "block";
+      } else {
+        menu.style.display = "none";
+      }
+    });
+
+    let tombolSpeed= document.querySelectorAll(".btn-speed");
+    tombolSpeed.forEach(function(tombol) {
+      tombol.addEventListener("click", function() {
+        player.kecepatan= Number(tombol.dataset.speed);
+        kecepatanMusuh= Number(tombol.dataset.speed)/3;
+      });
+    });
+
+    let tombolWarna= document.querySelectorAll(".btn-warna");
+    tombolWarna.forEach(function(tombol) {
+      tombol.addEventListener("click",function() {
+        warnaPlayer= tombol.dataset.warna;
+      });
+    });
+
+    document.getElementById("lanjut-pause").addEventListener("click", function() {
+      isPaused = false;
+      document.getElementById("menu-pause").style.display = "none";
+      document.getElementById("pause").innerText = "⏸️";
+    });
+
+    document.getElementById("toggle-suara").addEventListener("click",function() {
+      suaraNyala= !suaraNyala;
+      if (suaraNyala) {
+        document.getElementById("toggle-suara").innerText = "SUARA:ON";
+      } else {
+        document.getElementById("toggle-suara").innerText= "SUARA:OFF";
+      }
+    });
+    
+    document.getElementById("pilih-klasik").addEventListener("click", function() {
+      document.getElementById("menu-mode").style.display = "none";
+      mode = "klasik";
+      gameStarted = true;
+    });
+
+    document.getElementById("pilih-adventure").addEventListener("click", function() {
+      document.getElementById("menu-mode").style.display = "none";
+      mode = "adventure";
+      gameStarted = true;
+      document.getElementById("buka-toko").style.display = "inline-block";
+    });
+
+    document.getElementById("kiri").addEventListener("touchstart", function() { gerakKiri = true; });
+
+    function gameLoop() {
+      if (!gameStarted) {
+        requestAnimationFrame(gameLoop);
+        return;
+      }
+      if (quitGame) {
+        ctx.clearRect(0, 0,220,350);
+        requestAnimationFrame(gameLoop);
+        return;
+      }
+      if (isPaused) {
+        requestAnimationFrame(gameLoop);
+        return;
+      }
+      ctx.clearRect(0, 0, 220, 350);
+      if (!gameOver) {
+        if(gerakKiri && player.x > 0) { player.x -= player.kecepatan; }
+        if(gerakKanan && player.x + player.lebar < 220) { player.x += player.kecepatan; }
+        if(gerakAtas && player.y > 0) { player.y -= player.kecepatan; }
+        if(gerakBawah && player.y + player.tinggi < 350) { player.y += player.kecepatan; }
+        if(player.x < 0) { player.x = 0; }
+        if(player.x + player.lebar > 220) { player.x = 220 - player.lebar; }
+        if(player.y < 0) { player.y = 0; }
+        if(player.y + player.tinggi > 350) { player.y = 350 - player.tinggi; }
+        ctx.fillStyle = shieldAktif ? "#4fc3f7" : warnaPlayer;
+        ctx.beginPath();
+        ctx.roundRect(player.x, player.y, player.lebar, player.tinggi, 8);
+        ctx.fill();
+        ctx.strokeStyle = "black";
+        ctx.lineWidth = 3;
+        ctx.stroke();
+        ctx.fillStyle = "white";
+        ctx.beginPath();
+        ctx.arc(player.x +13,player.y + 15,7,0, Math.PI* 2);
+        ctx.arc(player.x +27, player.y + 15,7,0, Math.PI* 2);
+        ctx.fill();
+        ctx.fillStyle = "black";
+        ctx.beginPath();
+        ctx.arc(player.x +14, player.y + 15,3,0,  Math.PI* 2);
+        ctx.arc(player.x +28, player.y + 15,3,0, Math.PI* 2);
+        ctx.fill();
+        ctx.fillStyle = "black";
+        ctx.beginPath();
+        ctx.arc(player.x +20,player.y + 28,4,0, Math.PI* 2);
+        ctx.fill();
+
+        if (mode === "adventure") {
+          for (let i = 0; i < nyawaMax; i++) {
+            gambarHatiPixel(8 + i * 20, 8, i < nyawa);
+          }
+          if(mode === "adventure") {
+            ctx.fillStyle = "gold";
+            ctx.font = "10px 'Press strat 2P'";
+            ctx.textAlign = "right";
+            ctx.fillText("🪙" + koin, 212, 16);
+          }
+          if (shieldAktif) {
+            shieldTimer--;
+            if (shieldTimer <= 0) {
+              shieldAktif = false;
+            }
+          }
+        }
+
+        spawnCounter++;
+        if (spawnCounter > 30) { spawnMusuh(); spawnCounter = 0; }
+
+        if (mode === "adventure") {
+          powerUpCounter++;
+          if (powerUpCounter > 300) {
+            spawnPowerUp();
+            powerUpCounter = 0;
+          }
+        }
+        if (mode === "adventure") {
+            
+          koinCounterSpawn++;
+          if (koinCounterSpawn > 400) {
+            spawnKoin();
+            koinCounterSpawn = 0;
+          }
+        }
+       
+        for (let i = 0; i < musuh.length; i++) {
+          musuh[i].x += musuh[i].directionX;
+          musuh[i].y += musuh[i].directionY;
+          ctx.fillStyle = musuh[i].color;
+          ctx.fillRect(musuh[i].x, musuh[i].y, musuh[i].width, musuh[i].height);
+        }
+
+        if (mode === "adventure") {
+          for (let i = 0; i < powerUps.length; i++) {
+            let p = powerUps[i];
+            ctx.fillStyle = "#4fc3f7";
+            ctx.fillRect(p.x, p.y, p.ukuran, p.ukuran);
+            ctx.strokeStyle = "white";
+            ctx.lineWidth = 2;
+            ctx.strokeRect(p.x, p.y, p.ukuran, p.ukuran);
+          }
+        }
+        if(mode === "adventure") {
+          for (let i = koinDiLayar.length -1; i >= 0; i--) {
+            let k= koinDiLayar[i];
+            k.umur--;
+            if(k.umur <= 0) {
+              koinDiLayar.splice(i, 1);
+              continue;
+            }
+            ctx.fillStyle = "gold";
+            ctx.beginPath();
+            ctx.arc(k.x + k.ukuran/2, k.y + k.ukuran/2, k.ukuran/2, 0, Math.PI *2);
+            ctx.fill();
+            ctx.strokeStyle = "#b8860b";
+            ctx.lineWidth = 1;
+            ctx.stroke();
+          }
+        }
+        
+        skor++;
+        checkCollision();
+        if (mode === "adventure") {
+          checkPowerUpCollision();
+        }
+        if(mode === "adventure") {
+          checkKoinCollision();
+        }
+      } else {
+        ctx.textAlign = "center";
+        ctx.fillStyle = "white";
+        ctx.font = "bold 20px 'Press Start 2P'";
+        ctx.fillText("GAME OVER", 110, 150);
+        ctx.font = "12px 'Press Start 2P'";
+        ctx.fillText("Skor " + Math.floor(skor /10), 110, 180);
+        ctx.fillText("Rekor " + highScore, 110, 200);
+      }
+
+      for(let i= partikel.length -1; i >= 0; i--) {
+        let p= partikel[i];
+        p.x += p.dx;
+        p.y += p.dy;
+        p.hidup--;
+        ctx.fillStyle= "orange";
+        ctx.fillRect(p.x, p.y, 4,4);
+        if(p.hidup <=0) {
+          partikel.splice(i,1);
+        }
+      }
+      requestAnimationFrame(gameLoop);
+    }
+    gameLoop();
+  </script>
+</body>
+</html>
